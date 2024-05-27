@@ -1,7 +1,8 @@
-import { Box, Button, Input, Textarea, VStack } from "@chakra-ui/react";
+import { Box, Button, Input, Textarea, VStack, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 
 const Upload = () => {
+  const toast = useToast();
   const [photo, setPhoto] = useState(null);
   const [description, setDescription] = useState("");
 
@@ -14,9 +15,43 @@ const Upload = () => {
   };
 
   const handleUpload = () => {
-    // Placeholder function for handling photo upload
-    console.log("Photo:", photo);
-    console.log("Description:", description);
+    if (!photo) {
+      toast({
+        title: "No photo selected.",
+        description: "Please select a photo to upload.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const newPhoto = {
+        id: Date.now(),
+        url: reader.result,
+        description: description,
+      };
+
+      // Save the photo to local storage (simulating a backend)
+      const storedPhotos = JSON.parse(localStorage.getItem("photos")) || [];
+      storedPhotos.push(newPhoto);
+      localStorage.setItem("photos", JSON.stringify(storedPhotos));
+
+      toast({
+        title: "Photo uploaded.",
+        description: "Your photo has been uploaded successfully.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      // Clear the input fields
+      setPhoto(null);
+      setDescription("");
+    };
+    reader.readAsDataURL(photo);
   };
 
   return (
