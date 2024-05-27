@@ -1,4 +1,4 @@
-import { Box, Text, VStack, Image } from "@chakra-ui/react";
+import { Box, Text, VStack, Image, Button, HStack } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
 const Home = () => {
@@ -9,6 +9,17 @@ const Home = () => {
     setPhotos(storedPhotos);
   }, []);
 
+  const handleLike = (id) => {
+    const updatedPhotos = photos.map((photo) => {
+      if (photo.id === id) {
+        return { ...photo, likes: (photo.likes || 0) + 1 };
+      }
+      return photo;
+    });
+    setPhotos(updatedPhotos);
+    localStorage.setItem("photos", JSON.stringify(updatedPhotos));
+  };
+
   return (
     <Box p={4}>
       <VStack spacing={4}>
@@ -17,6 +28,10 @@ const Home = () => {
             <Image src={photo.url} alt={photo.description} />
             <Box p={4}>
               <Text>{photo.description}</Text>
+              <HStack mt={2}>
+                <Button size="sm" onClick={() => handleLike(photo.id)}>Like</Button>
+                <Text>{photo.likes || 0} Likes</Text>
+              </HStack>
             </Box>
           </Box>
         ))}
