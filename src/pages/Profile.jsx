@@ -1,11 +1,13 @@
 import { Box, Text, VStack, Image } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
 
 const Profile = () => {
-  // Placeholder data for user's photos
-  const userPhotos = [
-    { id: 1, url: "https://via.placeholder.com/300", description: "My first photo" },
-    { id: 2, url: "https://via.placeholder.com/300", description: "Vacation memories" },
-  ];
+  const [userPhotos, setUserPhotos] = useState([]);
+
+  useEffect(() => {
+    const storedPhotos = JSON.parse(localStorage.getItem("photos")) || [];
+    setUserPhotos(storedPhotos);
+  }, []);
 
   return (
     <Box p={4}>
